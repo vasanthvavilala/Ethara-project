@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Projects</h1>
+        <p>Create projects and add team members.</p>
+    </div>
+</section>
+
+{% if user.role == "Admin" %}
+<section class="card">
+    <h2>Create Project</h2>
+    <form method="POST" action="{{ url_for('create_project') }}" class="grid-form">
+        <input type="text" name="name" placeholder="Project name" required>
+        <input type="text" name="description" placeholder="Short description">
+        <button type="submit">Create Project</button>
+    </form>
+</section>
+{% endif %}
+
+<section class="card">
+    <h2>Project List</h2>
+    {% if projects %}
+    <div class="project-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description or "No description added." }}</p>
+            <p class="muted">Created by: {{ project.creator.name }}</p>
+
+            <h4>Members</h4>
+            {% if project.members %}
+                <ul class="member-list">
+                    {% for m in project.members %}
+                        <li>{{ m.user.name }} - {{ m.user.email }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="muted">No members added yet.</p>
+            {% endif %}
+
+            {% if user.role == "Admin" %}
+            <form method="POST" action="{{ url_for('add_member', project_id=project.id) }}" class="small-form">
+                <select name="user_id" required>
+                    <option value="">Select member</option>
+                    {% for member in members %}
+                    <option value="{{ member.id }}">{{ member.name }} - {{ member.email }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Add Member</button>
+            </form>
+
+            <form method="POST" action="{{ url_for('delete_project', project_id=project.id) }}" onsubmit="return confirmDelete();">
+                <button type="submit" class="btn-danger">Delete Project</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="muted">No projects available.</p>
+    {% endif %}
+</section>
+{% endblock %}

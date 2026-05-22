@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+    <h1>Create Account</h1>
+    <p class="muted">Signup as Admin or Member.</p>
+
+    <form method="POST" action="{{ url_for('signup') }}">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Enter name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+
+        <label>Role</label>
+        <select name="role">
+            <option value="Member">Member</option>
+            <option value="Admin">Admin</option>
+        </select>
+
+        <button type="submit">Signup</button>
+    </form>
+
+    <p class="center-text">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}
