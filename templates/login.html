@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+    <h1>Login to TeamFlow</h1>
+    <p class="muted">Manage projects, assign tasks and track team progress.</p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p class="center-text">New user? <a href="{{ url_for('signup') }}">Create account</a></p>
+
+    <div class="note-box">
+        <b>Demo Tip:</b> Create one Admin account and one Member account.
+    </div>
+</div>
+{% endblock %}

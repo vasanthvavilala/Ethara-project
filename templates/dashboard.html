@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Track your projects, tasks and progress in one place.</p>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Tasks</h3>
+        <p>{{ total_tasks }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Pending</h3>
+        <p>{{ pending }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>In Progress</h3>
+        <p>{{ in_progress }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Completed</h3>
+        <p>{{ completed }}</p>
+    </div>
+    <div class="stat-card danger">
+        <h3>Overdue</h3>
+        <p>{{ overdue }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Projects</h3>
+        <p>{{ projects_count }}</p>
+    </div>
+</div>
+
+<section class="card">
+    <h2>Recent / Upcoming Tasks</h2>
+    {% if recent_tasks %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Project</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in recent_tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.project.name }}</td>
+                    <td>{{ task.assignee.name }}</td>
+                    <td><span class="status">{{ task.status }}</span></td>
+                    <td>{{ task.due_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="muted">No tasks available yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

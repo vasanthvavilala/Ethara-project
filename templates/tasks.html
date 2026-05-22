@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <h1>Tasks</h1>
+        <p>Create, assign and update tasks.</p>
+    </div>
+</section>
+
+{% if user.role == "Admin" %}
+<section class="card">
+    <h2>Create Task</h2>
+    <form method="POST" action="{{ url_for('create_task') }}" class="task-form">
+        <input type="text" name="title" placeholder="Task title" required>
+        <input type="text" name="description" placeholder="Task description">
+
+        <select name="project_id" required>
+            <option value="">Select project</option>
+            {% for project in projects %}
+            <option value="{{ project.id }}">{{ project.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="assigned_to" required>
+            <option value="">Assign to member</option>
+            {% for member in members %}
+            <option value="{{ member.id }}">{{ member.name }} - {{ member.email }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="date" name="due_date" required>
+
+        <button type="submit">Create Task</button>
+    </form>
+</section>
+{% endif %}
+
+<section class="card">
+    <h2>Task List</h2>
+
+    {% if tasks %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Project</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Update</th>
+                    {% if user.role == "Admin" %}
+                    <th>Delete</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>
+                        <b>{{ task.title }}</b><br>
+                        <span class="muted">{{ task.description }}</span>
+                    </td>
+                    <td>{{ task.project.name }}</td>
+                    <td>{{ task.assignee.name }}</td>
+                    <td><span class="status">{{ task.status }}</span></td>
+                    <td>{{ task.due_date }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('update_task_status', task_id=task.id) }}" class="inline-form">
+                            <select name="status">
+                                <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                                <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                                <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                            </select>
+                            <button type="submit">Save</button>
+                        </form>
+                    </td>
+                    {% if user.role == "Admin" %}
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirmDelete();">
+                            <button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="muted">No tasks available.</p>
+    {% endif %}
+</section>
+{% endblock %}
